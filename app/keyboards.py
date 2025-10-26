@@ -25,8 +25,8 @@ settings = InlineKeyboardMarkup(inline_keyboard=[
 async def performers():
     all_performers = await get_performers()
     keyboard = InlineKeyboardBuilder()
-    for perf in all_performers:
-        keyboard.add(InlineKeyboardButton(text=perf.name, callback_data=f"performer_{perf.id}"))
+    for performer in all_performers:
+        keyboard.add(InlineKeyboardButton(text=performer.name, callback_data=f"performer_{performer.id}"))
     keyboard.add(InlineKeyboardButton(text='На главную', callback_data='to_main'))
     return keyboard.adjust(2).as_markup()
 

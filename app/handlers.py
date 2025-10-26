@@ -26,7 +26,7 @@ async def performer(message: Message):
     await message.answer('Выберите исполнителя', reply_markup=await kb.performers())
 
 
-@router_h.callback_query(F.data.startwith('performer_'))
+@router_h.callback_query(F.data.startswith('performer_'))
 async def performer(callback: CallbackQuery):
     await callback.answer('Вы выбрали исполнителя')
     await callback.message.answer('Выберите трек', reply_markup=await kb.songs(callback.data.split('_')[1]))
