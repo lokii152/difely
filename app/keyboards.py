@@ -2,29 +2,40 @@ from aiogram.types import (ReplyKeyboardMarkup, KeyboardButton,
                            InlineKeyboardMarkup, InlineKeyboardButton)
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
-# main = ReplyKeyboardMarkup(keyboard=[
-#     [KeyboardButton(text='Catalog')],
-#     [KeyboardButton(text='Profile'), KeyboardButton(text='Info')]
-# ],
-#                         # resize_keyboard=True, уменьшить кнопки
-#                         input_field_placeholder='Use menu.')
+from app.database.requests import get_performers, get_perf_song
 
-main = InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text='Исполнители', callback_data='catalog')],
-    [InlineKeyboardButton(text='Профиль', callback_data='profile'), InlineKeyboardButton(text='Информация', callback_data='info')]
-])
+main = ReplyKeyboardMarkup(keyboard=[
+    [KeyboardButton(text='Исполнители')],
+    [KeyboardButton(text='Профиль'), KeyboardButton(text='Информация')]
+],
+                        # resize_keyboard=True, уменьшить кнопки
+                        input_field_placeholder='Use menu.')
+
+# main = InlineKeyboardMarkup(inline_keyboard=[
+#     [InlineKeyboardButton(text='Исполнители', callback_data='catalog')],
+#     [InlineKeyboardButton(text='Профиль', callback_data='profile'), InlineKeyboardButton(text='Информация', callback_data='info')]
+# ])
 
 settings = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='YouTube', url='https://youtube.com/')]
     ])
 
 
-#список исполнителей
-artists = ['basta', 'morgenshtern', 'ladygaga', 'fdsfsdfsd', 'dastrv', 'dawojkcoi', 'dasdsa', 'fvovo', 'lvooo', 'amwnn', 'fewqq',
-           'fsdfsaaa', 'fsdivui', 'aswiiuiv', 'pppp', 'fpzpo', 'qwnvjx', 'dkoiiii', 'zopc[[[[', 'fpvknnwn']
-
-async def inline_art():
+#inlinekb of performers
+async def performers():
+    all_performers = await get_performers()
     keyboard = InlineKeyboardBuilder()
-    for art in artists:
-        keyboard.add(InlineKeyboardButton(text=art, url='https://youtube.com/'))
+    for perf in all_performers:
+        keyboard.add(InlineKeyboardButton(text=perf.name, callback_data=f"performer_{perf.id}"))
+    keyboard.add(InlineKeyboardButton(text='На главную', callback_data='to_main'))
     return keyboard.adjust(2).as_markup()
+
+#inlinekb of songs
+async def songs(performer_id):
+    all_songs = await get_perf_song(performer_id)
+    keyboard = InlineKeyboardBuilder()
+    for song in all_songs:
+        keyboard.add(InlineKeyboardButton(text=song.name, callback_data=f"song_{song.id}"))
+    keyboard.add(InlineKeyboardButton(text='На главную', callback_data='to_main'))
+    return keyboard.adjust(2).as_markup()
+
